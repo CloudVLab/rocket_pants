@@ -20,10 +20,10 @@ module RocketPants
         enable = options.delete(:enable) { true }
         param  = options.delete(:parameter).try(:to_sym)
         if enable
-          after_filter :wrap_response_in_jsonp, {:if => :jsonp_is_possible?}.reverse_merge(options)
+          after_action :wrap_response_in_jsonp, {:if => :jsonp_is_possible?}.reverse_merge(options)
           self._jsonp_parameter = param if param
         else
-          skip_after_filter :wrap_response_in_jsonp, options
+          skip_after_action :wrap_response_in_jsonp, options
         end
       end
 
@@ -32,7 +32,8 @@ module RocketPants
     private
 
     def jsonp_is_possible?
-      request.get? && response.content_type == "application/json" && jsonp_parameter.present?
+      # in rails-6 content_type also includes charset
+      request.get? && response.content_type.include?("application/json") && jsonp_parameter.present?
     end
 
     def jsonp_parameter

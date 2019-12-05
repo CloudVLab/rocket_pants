@@ -122,7 +122,10 @@ module RocketPants
     # JSON or HTTParty couldn't parse the response).
     # @param [Hash, Object] response the response to check errors on
     # @raise [RocketPants::Error] a generic error when the type is wrong, or a registered error subclass otherwise.
-    def check_response_errors(response)
+    def check_response_errors(resp)
+      # valid test input can be a HTTParty::Response
+      response = resp.respond_to?(:to_h) ? resp.to_h : resp
+
       if !response.is_a?(Hash)
         raise RocketPants::Error, "The response from the server was not in a supported format."
       elsif response.has_key?("error")

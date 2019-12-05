@@ -222,7 +222,15 @@ module RocketPants
       {}.tap do |metadata|
         metadata[:count]      = object.length unless singular
         metadata[:pagination] = Respondable.extract_pagination(object) if type == :paginated
-        metadata.merge! options[:metadata] if options[:metadata]
+
+        # special case to allow :metadata params
+        if options[:metadata]
+          if options[:metadata].class.name == "ActionController::Parameters"
+            metadata.merge! options[:metadata].permit!.to_h
+          else
+            metadata.merge! options[:metadata]
+          end
+        end
       end
     end
 

@@ -14,7 +14,9 @@ if (moneta_version = ENV["MONETA_VERSION"])
   gem 'moneta', moneta_version
 end
 
-gem 'rspec'
+gem 'rspec', '~> 2.99'
+gem 'crack'
+gem 'pry'
 
 if (wp_version = ENV['WILL_PAGINATE_VERSION'])
   gem 'will_paginate', wp_version
